@@ -1,0 +1,46 @@
+# ====================================
+# Unity generated folders
+# ====================================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+
+# ====================================
+# Unity auto-generated files
+# ====================================
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+
+# ====================================
+# IDE / Editor specific
+# ====================================
+.idea/
+.vscode/
+.vs/
+
+# ====================================
+# OS junk
+# ====================================
+.DS_Store
+Thumbs.db
+
+# ====================================
+# Build artifacts
+# ====================================
+Build/
+Builds/
