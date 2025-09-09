@@ -4,9 +4,10 @@ public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] Animator animator;
 
-    public void SetMoving(bool isMoving)
+    public void SetMoving(float isMoving)
     {
-        animator.SetBool("isMoving", isMoving);
+        //animator.SetBool("isMoving", isMoving);
+        animator.SetFloat("xMove", isMoving);
     }
 
     public void SetTriggerJump()
@@ -17,6 +18,11 @@ public class PlayerAnimationController : MonoBehaviour
     public void Falling(bool isFalling)
     {
         animator.SetBool("isFalling", isFalling);
+    }
+
+    public void SetAttack()
+    {
+        animator.SetTrigger("isAttack");
     }
 
 }

@@ -28,11 +28,10 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Run(); // Update Movement Visual
-        rb.linearVelocity = new Vector2(movement.x * speed, rb.linearVelocity.y); //Update Movement Physics
 
         Jump();
 
-        if (rb.linearVelocity.y < -0.1f && !isGrounded)
+        if (rb.linearVelocity.y < -0.1f && !IsGrounded())
         {
             animationController.Falling(true);
         }
@@ -42,25 +41,29 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Run()
+    public void Run()
     {
         movement = inputController.Movement;
 
         if (movement.x != 0)
             spriteRenderer.flipX = movement.x < 0;
-
-        animationController.SetMoving(movement.x != 0);
+            
+        rb.linearVelocity = new Vector2(movement.x * speed, rb.linearVelocity.y); //Update Movement Physics
+        animationController.SetMoving(Mathf.Abs(movement.x));
     }
 
-    void Jump()
+    public void Jump()
     {
-        isGrounded = feetCollider.IsTouchingLayers(groundLayer);
-
         // Cek input dulu sebelum ubah animasi
-        if (inputController.JumpAction.WasPressedThisFrame() && isGrounded)
+        if (inputController.JumpAction.WasPressedThisFrame() && IsGrounded())
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
             animationController.SetTriggerJump();
         }
+    }
+
+    public bool IsGrounded()
+    {
+       return isGrounded = feetCollider.IsTouchingLayers(groundLayer);
     }
 }
