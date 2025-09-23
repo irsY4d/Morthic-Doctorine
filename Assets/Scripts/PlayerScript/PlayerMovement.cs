@@ -8,21 +8,28 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpSpeed = 1f;
 
     [Header("Ground Check (Feet Collider)")]
-    BoxCollider2D feetCollider;
+    [SerializeField] BoxCollider2D feetCollider;
     [SerializeField] LayerMask groundLayer;
 
+    [Header("Gravity Scale")]
+    [SerializeField] float normalGravityScale = 1f;
+    [SerializeField] float fallGravityScale = 2.5f;
+    [SerializeField] float jumpCutGravityScale = 5f; // gravitasi saat tombol dilepas
+
+
     [Header("Reference")]
-    [SerializeField] SpriteRenderer spriteRenderer;
+    //[SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] PlayerAnimationController animationController;
     [SerializeField] PlayerInputController inputController;
     Rigidbody2D rb;
     Vector2 movement;
     bool isGrounded;
+    bool isJumping = false;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        feetCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -31,14 +38,22 @@ public class PlayerMovement : MonoBehaviour
 
         Jump();
 
-        if (rb.linearVelocity.y < -0.1f && !IsGrounded())
+        if (rb.linearVelocity.y > 0f && !inputController.JumpAction.IsPressed() && isJumping)
         {
+            rb.gravityScale = jumpCutGravityScale;
+            isJumping = false;
+        }
+        else if (rb.linearVelocity.y < -0.1f && !IsGrounded())
+        {
+            rb.gravityScale = fallGravityScale;
             animationController.Falling(true);
         }
         else
         {
+            rb.gravityScale = normalGravityScale;
             animationController.Falling(false);
         }
+
     }
 
     public void Run()
@@ -46,11 +61,15 @@ public class PlayerMovement : MonoBehaviour
         movement = inputController.Movement;
 
         if (movement.x != 0)
-            spriteRenderer.flipX = movement.x < 0;
-            
-        rb.linearVelocity = new Vector2(movement.x * speed, rb.linearVelocity.y); //Update Movement Physics
+        {
+            // flip seluruh GameObject (sprite + collider + child)
+            transform.localScale = new Vector3(movement.x < 0 ? -1 : 1, 1, 1);
+        }
+
+        rb.linearVelocity = new Vector2(movement.x * speed, rb.linearVelocity.y);
         animationController.SetMoving(Mathf.Abs(movement.x));
     }
+
 
     public void Jump()
     {
@@ -59,11 +78,12 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
             animationController.SetTriggerJump();
+            isJumping = true;
         }
     }
 
     public bool IsGrounded()
     {
-       return isGrounded = feetCollider.IsTouchingLayers(groundLayer);
+        return isGrounded = feetCollider.IsTouchingLayers(groundLayer);
     }
 }

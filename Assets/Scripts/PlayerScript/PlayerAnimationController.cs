@@ -25,4 +25,18 @@ public class PlayerAnimationController : MonoBehaviour
         animator.SetTrigger("isAttack");
     }
 
+    public void GetHit()
+    {
+        animator.SetTrigger("gotHit");
+    }
+
+    public void SetDeath()
+    {
+        animator.SetTrigger("isDeath");
+    }
+
+    public void SetJumpAttack()
+    {
+        animator.SetTrigger("JumpAttack");
+    }
 }
