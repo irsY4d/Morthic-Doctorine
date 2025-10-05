@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    enum ATTACKSTAGE
-    {
-        None,
-        Attack1,
-        Attack2
-    }
+    // enum ATTACKSTAGE
+    // {
+    //     None,
+    //     Attack1,
+    //     Attack2
+    // }
     [SerializeField] PlayerAnimationController animationController;
     [SerializeField] PlayerInputController inputController;
     [SerializeField] PlayerMovement playerMovement;
+    [SerializeField] PlayerHealth playerHealth;
 
     [Header("Attack Settings")]
     [SerializeField] BoxCollider2D swordHitbox;
@@ -18,16 +19,35 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] AttackData swordAttackData;
     [SerializeField] float comboResetTime = 0.8f;
 
-    ATTACKSTAGE currentStage = ATTACKSTAGE.None;
+    //ATTACKSTAGE currentStage = ATTACKSTAGE.None;
     float comboTimer;
     private bool hasHitEnemy = false;
+    private int atkcomboStage = 0;
+    private int atkjumpcomboStage = 0;
 
+    void Start()
+    {
+        if (playerHealth == null)
+            playerHealth = GetComponent<PlayerHealth>();
 
+        if (inputController == null)
+            inputController = GetComponent<PlayerInputController>();
+
+        if (animationController == null)
+            animationController = GetComponent<PlayerAnimationController>();
+
+        if (playerMovement == null)
+            playerMovement = GetComponent<PlayerMovement>();
+    }
+    
     void Update()
     {
         comboTimer -= Time.deltaTime;
         if (comboTimer <= 0f)
-            currentStage = ATTACKSTAGE.None;
+        {
+            atkcomboStage = 0;
+            atkjumpcomboStage = 0;
+        }
 
         if (inputController.Attack.WasPressedThisFrame())
         {
@@ -38,45 +58,38 @@ public class PlayerCombat : MonoBehaviour
                 JumpAttack();
             }
         }
+        else if (inputController.SpellAction.WasCompletedThisFrame())
+        {
+            HealingSpell();
+        }
     }
 
     void Attack()
     {
-        switch (currentStage)
+        if (atkcomboStage < 2)
         {
-            case ATTACKSTAGE.None:
-                currentStage = ATTACKSTAGE.Attack1;
-                //animationController.SetAttack();
-                break;
-            case ATTACKSTAGE.Attack1:
-                currentStage = ATTACKSTAGE.Attack2;
-                //animationController.SetAttack();
-                break;
-            default:
-                currentStage = ATTACKSTAGE.None;
-                break;
+            atkcomboStage++;
         }
-
-        animationController.SetAttack();
+        else
+        {
+            atkcomboStage = 1;
+        }
+        animationController.SetAttack(atkcomboStage);
         comboTimer = comboResetTime;
     }
 
     void JumpAttack()
     {
-        switch (currentStage)
+        if (atkjumpcomboStage < 2)
         {
-            case ATTACKSTAGE.None:
-                currentStage = ATTACKSTAGE.Attack1;
-                break;
-            case ATTACKSTAGE.Attack1:
-                currentStage = ATTACKSTAGE.Attack2;
-                break;
-            default:
-                currentStage = ATTACKSTAGE.None;
-                break;
+            atkjumpcomboStage++;
+        }
+        else
+        {
+            atkjumpcomboStage = 2;
         }
 
-        animationController.SetJumpAttack();
+        animationController.SetJumpAttack(atkjumpcomboStage);
         comboTimer = comboResetTime;
     }
     void EnableHitbox()
@@ -98,6 +111,21 @@ public class PlayerCombat : MonoBehaviour
     }
 
 
+    void HealingSpell()
+    {
+        if (playerHealth.HealthPoint < playerHealth.maxHealthPoint)
+        {
+            animationController.CastHealingSpell();
+            playerHealth.HealthPoint += 2;
+
+            // Clamp biar gak lebih dari max
+            if (playerHealth.HealthPoint > playerHealth.maxHealthPoint)
+            {
+                playerHealth.HealthPoint = playerHealth.maxHealthPoint;
+            }
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (hasHitEnemy) return;
@@ -117,7 +145,7 @@ public class PlayerCombat : MonoBehaviour
             {
                 enemy.TakeDamage(activeAttack.damageAmount);
                 hasHitEnemy = true;
-                Debug.Log($"Hit enemy with {activeAttack.attackName} → {activeAttack.damageAmount} dmg");
+                Debug.Log($"Hit enemy {enemy.EnemyName} with {activeAttack.attackName} → {activeAttack.damageAmount} dmg");
             }
         }
     }

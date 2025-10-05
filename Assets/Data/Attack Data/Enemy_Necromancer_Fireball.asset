@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8219236f9a5c7047b383955a61315fc, type: 3}
-  m_Name: Enemy_HoundClaw
+  m_Name: Enemy_Necromancer_Fireball
   m_EditorClassIdentifier: 
-  attackName: clawAttack
-  damageAmount: 3
-  type: 0
+  attackName: necroFireball
+  damageAmount: 2
+  type: 1

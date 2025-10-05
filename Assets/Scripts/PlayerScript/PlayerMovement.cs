@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
         Jump();
 
-        if (rb.linearVelocity.y > 0f && !inputController.JumpAction.IsPressed() && isJumping)
+        if (rb.linearVelocity.y > 0f && !inputController.JumpAction.IsPressed())
         {
             rb.gravityScale = jumpCutGravityScale;
             isJumping = false;
@@ -47,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.gravityScale = fallGravityScale;
             animationController.Falling(true);
+            isJumping = true;
         }
         else
         {

@@ -1,28 +1,37 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] float HealthPoint = 4f;
+    [Header("Basic Data")]
+    [SerializeField] EnemyData data;
+    [SerializeField] Transform leftPoint;
+    [SerializeField] Transform rightPoint;
     [SerializeField] Animator animator;
-    [SerializeField] float moveSpeed = 2f;
-    [SerializeField] float moveDistance = 4f;
     [SerializeField] float idleDuration = 2f;
-    [SerializeField] bool enemyBoss = false;
 
     private Rigidbody2D rb;
     private Vector2 startPos;
+    private EnemyData runtimeData;
     private bool movingRight = true;
     private bool isIdle = false;
     private float idleTimer = 0f;
     private bool isDead = false;
     private bool isHit = false;
     private bool isChasing = false;
+    private float currentHealth;
 
     public bool IsDead => isDead;
     public bool IsChasing => isChasing;
-    public bool HasSuperArmor => enemyBoss;
+    public bool HasSuperArmor => data.isBoss;
+    public string EnemyName => data.enemyName;
 
+    void Awake()
+    {
+        runtimeData = Instantiate(data);
+        currentHealth = runtimeData.maxHealth;
+    }
 
     void Start()
     {
@@ -33,9 +42,12 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        //Debug.Log($"Enemy {EnemyName} → isDead: {isDead}, isHit: {isHit}, isChasing: {isChasing}");
         if (isDead || isChasing) return;
 
-        Patrol();
+        if (data.canPatrol && !data.isBoss) // hanya enemy yang bisa patrol
+            Patrol();
+
     }
 
     public void TakeDamage(float dmg)
@@ -43,8 +55,8 @@ public class EnemyController : MonoBehaviour
         if (isDead) return;
 
         isHit = true;
-        HealthPoint -= dmg;
-        Debug.Log($"Enemy took {dmg} damage → {HealthPoint} HP left");
+        currentHealth -= dmg;
+        Debug.Log($"Enemy {data.enemyName} took {dmg} damage → {currentHealth} HP left");
 
         if (!HasSuperArmor)
         {
@@ -56,14 +68,13 @@ public class EnemyController : MonoBehaviour
             StartCoroutine(FlashRed());
         }
 
-        if (HealthPoint <= 0)
+        if (currentHealth <= 0)
         {
             isDead = true;
             rb.linearVelocity = Vector2.zero;
             animator.SetTrigger("Dead");
-            Debug.Log("Enemy Dead");
         }
-    }   
+    }
 
     IEnumerator FlashRed()
     {
@@ -72,31 +83,42 @@ public class EnemyController : MonoBehaviour
         {
             sr.color = Color.red;
             yield return new WaitForSeconds(0.1f);
-            sr.color = Color.white; // balik ke normal
+            sr.color = Color.white;
         }
     }
-
-    // void ResetHit()
-    // {
-    //     isHit = false;
-    // }
 
     public void DestroySelf()
     {
         Destroy(gameObject);
     }
 
+    // -------------------
+    // 🔹 Fungsi Modular Flip
+    // -------------------
+    public void Flip(bool faceRight)
+    {
+        movingRight = faceRight;
+        transform.localScale = new Vector3(
+            faceRight ? -Mathf.Abs(transform.localScale.x) : Mathf.Abs(transform.localScale.x),
+            transform.localScale.y,
+            transform.localScale.z
+        );
+    }
+
+    // 🔹 Menghadap player (buat Necromancer / Ranged Enemy)
+    public void FacePlayer(Transform player)
+    {
+        if (player == null) return;
+
+        bool playerIsRight = player.position.x > transform.position.x;
+        Flip(playerIsRight);
+    }
 
     void Patrol()
     {
-        if (isHit || isDead) // kalau lagi dipukul → stop total
-        {
-            rb.linearVelocity = Vector2.zero;
-            //animator.SetBool("isWalking", false);
-            return;
-        }
+        if (isHit || isDead) return;
 
-        if (isIdle) // kalau lagi idle → berhenti
+        if (isIdle)
         {
             rb.linearVelocity = Vector2.zero;
             animator.SetBool("isWalking", false);
@@ -106,26 +128,23 @@ public class EnemyController : MonoBehaviour
             {
                 isIdle = false;
                 idleTimer = 0f;
-                movingRight = !movingRight;
-
-                // flip sprite
-                transform.localScale = new Vector3(
-                    movingRight ? -Mathf.Abs(transform.localScale.x) : Mathf.Abs(transform.localScale.x),
-                    transform.localScale.y,
-                    transform.localScale.z
-                );
+                Flip(!movingRight);
             }
         }
-        else // kalau jalan
+        else
         {
             animator.SetBool("isWalking", true);
 
             float dir = movingRight ? 1f : -1f;
-            rb.linearVelocity = new Vector2(dir * moveSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(dir * data.moveSpeed, rb.linearVelocity.y);
 
-            // cek batas patrol
-            if ((movingRight && transform.position.x >= startPos.x + moveDistance / 2f) ||
-                (!movingRight && transform.position.x <= startPos.x - moveDistance / 2f))
+            // cek apakah sampai ke titik batas
+            if (movingRight && transform.position.x >= rightPoint.position.x)
+            {
+                isIdle = true;
+                rb.linearVelocity = Vector2.zero;
+            }
+            else if (!movingRight && transform.position.x <= leftPoint.position.x)
             {
                 isIdle = true;
                 rb.linearVelocity = Vector2.zero;
@@ -133,16 +152,17 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+
     public void StopPatrol()
     {
         rb.linearVelocity = Vector2.zero;
         animator.SetBool("isWalking", false);
-        isIdle = false; // biar ga stuck idle
+        isIdle = false;
         isChasing = true;
     }
+
     public void ResumePatrol()
     {
         isChasing = false;
     }
-
 }

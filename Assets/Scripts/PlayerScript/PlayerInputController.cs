@@ -8,18 +8,20 @@ public class PlayerInputController : MonoBehaviour
     private InputAction move;
     private InputAction jump;
     private InputAction attack;
+    private InputAction spell;
     
 
     public Vector2 Movement { get; private set; }
     public InputAction JumpAction => jump;
     public InputAction Attack => attack;
+    public InputAction SpellAction => spell;
 
     private void OnEnable()
     {
         inputActions.FindActionMap("Player").Enable();
     }
 
-    private void OnDisable()
+        private void OnDisable()
     {
         inputActions.FindActionMap("Player").Disable();
     }
@@ -30,6 +32,7 @@ public class PlayerInputController : MonoBehaviour
         move = playerMap.FindAction("Move");
         jump = playerMap.FindAction("Jump");
         attack = playerMap.FindAction("Attack");
+        spell = playerMap.FindAction("Spell");
 
         move.performed += ctx => Movement = ctx.ReadValue<Vector2>();
         move.canceled += ctx => Movement = Vector2.zero;

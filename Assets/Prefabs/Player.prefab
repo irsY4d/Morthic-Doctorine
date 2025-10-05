@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1905446584378460823}
   - component: {fileID: 4108622095432421352}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FeetBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.32576466, y: -0.14426768}
+  m_Offset: {x: -0.32576466, y: -0.05815375}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -155,7 +155,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.3484707, y: 0.7162721}
+  m_Size: {x: 0.3484707, y: 0.8885}
   m_EdgeRadius: 0
 --- !u!1 &3960377798573983939
 GameObject:
@@ -444,7 +444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  jumpSpeed: 7
+  jumpSpeed: 8
   feetCollider: {fileID: 4108622095432421352}
   groundLayer:
     serializedVersion: 2
@@ -581,8 +581,8 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
-  m_NeverAutoSwitchControlSchemes: 1
-  m_DefaultControlScheme: Gamepad
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -601,6 +601,7 @@ MonoBehaviour:
   animationController: {fileID: 7213600140932743611}
   inputController: {fileID: 8180811718454221393}
   playerMovement: {fileID: 1110567813123075825}
+  playerHealth: {fileID: 0}
   swordHitbox: {fileID: 2877059829662047229}
   jumpSwordAttack: {fileID: 3361810131514001512}
   swordAttackData: {fileID: 11400000, guid: f3dc6d89f7a2dc24e8609e11b378fd8e, type: 2}
@@ -617,5 +618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb421247385b6c45bd33c6ca5c0cd96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 10
+  HealthPoint: 2
+  maxHealthPoint: 10
   animationController: {fileID: 7213600140932743611}
+  knockbackForce: {x: 2, y: 1}

@@ -4,6 +4,8 @@ public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] Animator animator;
 
+    private bool isDead = false;
+
     public void SetMoving(float isMoving)
     {
         //animator.SetBool("isMoving", isMoving);
@@ -20,23 +22,35 @@ public class PlayerAnimationController : MonoBehaviour
         animator.SetBool("isFalling", isFalling);
     }
 
-    public void SetAttack()
+    public void SetAttack(int stage)
     {
+        animator.SetInteger("comboStage", stage);
         animator.SetTrigger("isAttack");
     }
 
     public void GetHit()
     {
+        if (isDead)
+        {
+            return;
+        }
         animator.SetTrigger("gotHit");
     }
 
-    public void SetDeath()
+    public void SetDeath(bool hasDead)
     {
-        animator.SetTrigger("isDeath");
+        isDead = hasDead;
+        animator.SetBool("hasDead", hasDead);
     }
 
-    public void SetJumpAttack()
+    public void SetJumpAttack(int stage)
     {
+        animator.SetInteger("comboStage", stage);
         animator.SetTrigger("JumpAttack");
+    }
+
+    public void CastHealingSpell()
+    {
+        animator.SetTrigger("castHealing");
     }
 }

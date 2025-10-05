@@ -110,6 +110,7 @@ public class EnemyAttack : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!clawAttackHitbox.enabled || hasHitPlayer) return;
+        //if (gameObject.layer != LayerMask.NameToLayer("Player")) return;
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
