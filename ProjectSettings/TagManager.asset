@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - SkyGround
+  - Stairs
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - PlayerAttack
   - Enemy
   - EnemyAttack
-  - 
+  - Stairs
   - 
   - 
   - 
@@ -50,11 +52,20 @@ TagManager:
   - name: Ground
     uniqueID: 1695110455
     locked: 0
+  - name: NPC
+    uniqueID: 1767535317
+    locked: 0
   - name: Enemy
     uniqueID: 183732433
     locked: 0
   - name: Player
     uniqueID: 954695273
+    locked: 0
+  - name: Effect
+    uniqueID: 3306377965
+    locked: 0
+  - name: Foreground
+    uniqueID: 771562765
     locked: 0
   m_RenderingLayers:
   - Default

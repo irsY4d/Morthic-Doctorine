@@ -25,6 +25,7 @@ public class EnemyController : MonoBehaviour
     public bool IsDead => isDead;
     public bool IsChasing => isChasing;
     public bool HasSuperArmor => data.isBoss;
+    public float EnemySpeed => data.moveSpeed;
     public string EnemyName => data.enemyName;
 
     void Awake()
@@ -62,6 +63,9 @@ public class EnemyController : MonoBehaviour
         {
             rb.linearVelocity = Vector2.zero;
             animator.SetTrigger("Hit");
+            GlobalEffect.Instance.SpawnBloodEffect(transform.position + Vector3.up * 0.3f);
+            GlobalEffect.Instance.PlayHitSFX();
+
         }
         else
         {
@@ -164,5 +168,7 @@ public class EnemyController : MonoBehaviour
     public void ResumePatrol()
     {
         isChasing = false;
+        Flip(movingRight);
+        //Debug.Log("Continue Patroling");
     }
 }

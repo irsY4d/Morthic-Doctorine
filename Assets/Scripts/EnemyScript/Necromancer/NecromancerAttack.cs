@@ -14,17 +14,20 @@ public class NecromancerAttack : MonoBehaviour
     [SerializeField] float chaseSpeed = 2f;
 
     [SerializeField] Animator animator;
+    [SerializeField] AudioClip fireballSFX;
 
     private Transform player;
     private float cooldownTImer;
     private bool isAttacking = false;
     private Rigidbody2D rb;
+    private AudioSource audioSource;
 
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -95,5 +98,11 @@ public class NecromancerAttack : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
+    public void PlayFireballSFX()
+    {
+        if (fireballSFX != null)
+            audioSource.PlayOneShot(fireballSFX);
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -13,13 +14,24 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] PlayerMovement playerMovement;
     [SerializeField] PlayerHealth playerHealth;
 
+    [Header("SFX Settings")]
+    [SerializeField] AudioClip sword1SFX;
+    [SerializeField] AudioClip sword2SFX;
+    [SerializeField] AudioClip swordlongSFX;
+    [SerializeField] AudioSource audioSource;
+
     [Header("Attack Settings")]
     [SerializeField] BoxCollider2D swordHitbox;
     [SerializeField] PolygonCollider2D jumpSwordAttack;
     [SerializeField] AttackData swordAttackData;
     [SerializeField] float comboResetTime = 0.8f;
 
+    [Header("Skill Cooldown")]
+    [SerializeField] private float healCooldown = 3f;
+    private float CooldownTimerskill = 0f;
+
     //ATTACKSTAGE currentStage = ATTACKSTAGE.None;
+    Rigidbody2D rb;
     float comboTimer;
     private bool hasHitEnemy = false;
     private int atkcomboStage = 0;
@@ -38,11 +50,17 @@ public class PlayerCombat : MonoBehaviour
 
         if (playerMovement == null)
             playerMovement = GetComponent<PlayerMovement>();
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
     }
-    
+
     void Update()
     {
         comboTimer -= Time.deltaTime;
+        CooldownTimerskill -= Time.deltaTime;
+
         if (comboTimer <= 0f)
         {
             atkcomboStage = 0;
@@ -52,15 +70,21 @@ public class PlayerCombat : MonoBehaviour
         if (inputController.Attack.WasPressedThisFrame())
         {
             if (playerMovement.IsGrounded())
+            {
                 Attack();
+            }
             else
             {
                 JumpAttack();
             }
         }
-        else if (inputController.SpellAction.WasCompletedThisFrame())
+        else if (inputController.SpellAction.WasPressedThisFrame())
         {
-            HealingSpell();
+            if (playerMovement.IsGrounded())
+            {
+                HealingSpell();
+            }
+
         }
     }
 
@@ -113,17 +137,40 @@ public class PlayerCombat : MonoBehaviour
 
     void HealingSpell()
     {
+        if (CooldownTimerskill > 0f)
+        {
+            Debug.Log("Healing on cooldown!");
+            return;
+        }
+
         if (playerHealth.HealthPoint < playerHealth.maxHealthPoint)
         {
             animationController.CastHealingSpell();
             playerHealth.HealthPoint += 2;
+            GlobalEffect.Instance.RegenEffect(transform.position + Vector3.up * 0.3f, transform);
+            GlobalEffect.Instance.PlayHealSFX();
+            StartCoroutine(DisableMovement());
 
             // Clamp biar gak lebih dari max
             if (playerHealth.HealthPoint > playerHealth.maxHealthPoint)
             {
                 playerHealth.HealthPoint = playerHealth.maxHealthPoint;
             }
+
+            CooldownTimerskill = healCooldown;
         }
+    }
+
+    private IEnumerator DisableMovement()
+    {
+        PlayerMovement movement = GetComponent<PlayerMovement>();
+        movement.enabled = false;
+
+        rb.linearVelocity = Vector2.zero;
+
+        yield return new WaitForSeconds(0.5f);
+
+        movement.enabled = true;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -150,4 +197,27 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+
+    public void Sword1SFX()
+    {
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(sword1SFX);
+        }
+    }
+    public void Sword2SFX()
+    {
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(sword2SFX);
+        }
+    }
+
+    public void SwordlongSFX()
+    {
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(swordlongSFX);
+        }
+    }
 }

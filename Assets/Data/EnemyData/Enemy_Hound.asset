@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Hound
   maxHealth: 20
-  moveSpeed: 4
+  moveSpeed: 2
   isBoss: 0
   canPatrol: 1

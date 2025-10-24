@@ -6,13 +6,16 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] public float HealthPoint;
     [SerializeField] public float maxHealthPoint;
     [SerializeField] PlayerAnimationController animationController;
+    [SerializeField] AudioClip damageVoice;
 
     public Vector2 knockbackForce = new Vector2(5f, 3f);
     private Rigidbody2D rb;
+    private AudioSource audioSource;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void TakeDamage(float damage)
@@ -20,6 +23,10 @@ public class PlayerHealth : MonoBehaviour
         HealthPoint -= damage;
 
         animationController.GetHit();
+        GlobalEffect.Instance.SpawnBloodEffect(transform.position + Vector3.up * 0.3f);
+        GlobalEffect.Instance.PlayHitSFX();
+        audioSource.PlayOneShot(damageVoice);
+
         animationController.SetDeath(false);
 
         Debug.Log($"Player took {damage} damage → {HealthPoint} HP left");
@@ -38,6 +45,7 @@ public class PlayerHealth : MonoBehaviour
             
             rb.linearVelocity = Vector2.zero;
             GetComponent<PlayerMovement>().enabled = false;
+            GetComponent<PlayerCombat>().enabled = false;
             StopAllCoroutines();
             StartCoroutine(DelayedDeathFlag());
 
@@ -63,8 +71,6 @@ public class PlayerHealth : MonoBehaviour
             SetLayerRecursively(child.gameObject, layerName);
         }
     }
-
-
 
     private IEnumerator DisableMovement()
     {

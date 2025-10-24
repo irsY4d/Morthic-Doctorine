@@ -6,10 +6,10 @@ public class EnemyAttack : MonoBehaviour
     [SerializeField] EnemyController enemyController; // biar bisa stop patrol saat chasing
     [SerializeField] Animator animator;
     [SerializeField] Rigidbody2D rb;
+    [SerializeField] AudioClip clawAttack;
 
     [Header("Chase Settings")]
     [SerializeField] float detectionRadius = 5f;
-    [SerializeField] float chaseSpeed = 3f;
     [SerializeField] float attackRange = 1.2f;
 
     [Header("Attack Settings")]
@@ -20,6 +20,7 @@ public class EnemyAttack : MonoBehaviour
     private float attackTimer = 0f;
     private Transform player;
     private bool hasHitPlayer = false;
+    private AudioSource audioSource;
 
 
     void Start()
@@ -34,6 +35,11 @@ public class EnemyAttack : MonoBehaviour
 
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
     }
 
     void Update()
@@ -63,7 +69,7 @@ public class EnemyAttack : MonoBehaviour
             animator.SetBool("isWalking", true);
 
             Vector2 dir = (player.position - transform.position).normalized;
-            rb.linearVelocity = new Vector2(dir.x * chaseSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(dir.x * enemyController.EnemySpeed, rb.linearVelocity.y);
 
             // flip sprite sesuai arah
             if (dir.x != 0)
@@ -123,4 +129,11 @@ public class EnemyAttack : MonoBehaviour
         }
     }
 
+    public void clawSFX()
+    {
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(clawAttack);
+        }
+    }
 }

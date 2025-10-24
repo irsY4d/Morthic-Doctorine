@@ -48,6 +48,11 @@ public class Fireball : MonoBehaviour
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
+            if (other.tag == "SkyGround")
+            {
+                return;
+            }
+            
             Debug.Log("Tanah");
             Destroy(gameObject);
         }
