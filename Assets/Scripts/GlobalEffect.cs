@@ -30,7 +30,7 @@ public class GlobalEffect : MonoBehaviour
         }
 
         GameObject blood = Instantiate(bloodEffectPrefab, position, Quaternion.identity);
-        Destroy(blood, 0.1f); // hancurkan prefab yang di-spawn, bukan GlobalEffect!
+        Destroy(blood, 0.6f); // hancurkan prefab yang di-spawn, bukan GlobalEffect!
     }
 
     public void RegenEffect(Vector3 position, Transform followTarget = null)

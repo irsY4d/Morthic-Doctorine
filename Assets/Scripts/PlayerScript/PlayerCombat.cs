@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -147,6 +148,7 @@ public class PlayerCombat : MonoBehaviour
         {
             animationController.CastHealingSpell();
             playerHealth.HealthPoint += 2;
+            playerHealth.UpdateHealthUI();
             GlobalEffect.Instance.RegenEffect(transform.position + Vector3.up * 0.3f, transform);
             GlobalEffect.Instance.PlayHealSFX();
             StartCoroutine(DisableMovement());

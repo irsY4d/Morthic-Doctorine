@@ -3,9 +3,6 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // public Rigidbody2D.SlideMovement slideMovement = new Rigidbody2D.SlideMovement();
-    // public Rigidbody2D.SlideResults SlideResults;
-
     [Header("Movement")]
     [SerializeField] float speed = 0f;
     [SerializeField] float jumpSpeed = 1f;

@@ -59,11 +59,12 @@ public class EnemyController : MonoBehaviour
         currentHealth -= dmg;
         Debug.Log($"Enemy {data.enemyName} took {dmg} damage → {currentHealth} HP left");
 
-        if (!HasSuperArmor)
+        if (!HasSuperArmor) 
         {
             rb.linearVelocity = Vector2.zero;
             animator.SetTrigger("Hit");
-            GlobalEffect.Instance.SpawnBloodEffect(transform.position + Vector3.up * 0.3f);
+            Vector3 offset = new Vector3(0.2f, 0.1f, 0f); // tweak sesuai kebutuhan
+            GlobalEffect.Instance.SpawnBloodEffect(transform.position + offset);
             GlobalEffect.Instance.PlayHitSFX();
 
         }
@@ -93,6 +94,7 @@ public class EnemyController : MonoBehaviour
 
     public void DestroySelf()
     {
+        Debug.Log($"{EnemyName} destroyed!");
         Destroy(gameObject);
     }
 

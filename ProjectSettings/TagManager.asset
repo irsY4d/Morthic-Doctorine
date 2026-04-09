@@ -6,6 +6,7 @@ TagManager:
   tags:
   - SkyGround
   - Stairs
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

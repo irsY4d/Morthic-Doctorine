@@ -22,7 +22,7 @@ public class SceneExit : MonoBehaviour
     IEnumerator TransitionToNextScene()
     {
         // Optional: play fade-out animation here
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(delay);
 
         // Panggil SceneTransitionManager yang modular
         SceneTransitionManager.LoadScene(nextSceneName, entryPointID);

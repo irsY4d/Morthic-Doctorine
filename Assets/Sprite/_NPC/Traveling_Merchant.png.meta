@@ -119,7 +119,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 15
-        y: 63
+        y: 64
         width: 36
         height: 53
       alignment: 0
@@ -141,7 +141,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 79
-        y: 63
+        y: 64
         width: 36
         height: 53
       alignment: 0
@@ -163,7 +163,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 143
-        y: 63
+        y: 64
         width: 36
         height: 53
       alignment: 0
@@ -184,10 +184,10 @@ TextureImporter:
       name: Traveling_Merchant_3
       rect:
         serializedVersion: 2
-        x: 208
-        y: 63
-        width: 34
-        height: 52
+        x: 207
+        y: 64
+        width: 36
+        height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,8 +208,8 @@ TextureImporter:
         serializedVersion: 2
         x: 15
         y: 0
-        width: 35
-        height: 52
+        width: 36
+        height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -231,7 +231,7 @@ TextureImporter:
         x: 79
         y: 0
         width: 36
-        height: 52
+        height: 53
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ece1cbb00f836654db49556646808bc5
     internalID: 0
     vertices: []
     indices: 

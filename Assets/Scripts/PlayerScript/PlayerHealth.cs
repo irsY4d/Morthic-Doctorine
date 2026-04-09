@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] public float maxHealthPoint;
     [SerializeField] PlayerAnimationController animationController;
     [SerializeField] AudioClip damageVoice;
+    [SerializeField] Image healthBarFill;
 
     public Vector2 knockbackForce = new Vector2(5f, 3f);
     private Rigidbody2D rb;
@@ -16,14 +18,18 @@ public class PlayerHealth : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
+
+        UpdateHealthUI();
     }
 
     public void TakeDamage(float damage)
     {
         HealthPoint -= damage;
 
+        UpdateHealthUI();
         animationController.GetHit();
-        GlobalEffect.Instance.SpawnBloodEffect(transform.position + Vector3.up * 0.3f);
+        Vector3 offset = new Vector3(0.2f, 0.1f, 0f); // tweak sesuai kebutuhan
+        GlobalEffect.Instance.SpawnBloodEffect(transform.position + offset);
         GlobalEffect.Instance.PlayHitSFX();
         audioSource.PlayOneShot(damageVoice);
 
@@ -37,12 +43,21 @@ public class PlayerHealth : MonoBehaviour
         DeadState();
     }
 
+    public void UpdateHealthUI()
+    {
+        if (healthBarFill != null)
+        {
+            float amountHP = HealthPoint / maxHealthPoint;
+            healthBarFill.fillAmount = amountHP;
+        }
+    }
+
     void DeadState()
     {
         if (HealthPoint <= 0)
         {
             gameObject.layer = LayerMask.NameToLayer("Feet");
-            
+
             rb.linearVelocity = Vector2.zero;
             GetComponent<PlayerMovement>().enabled = false;
             GetComponent<PlayerCombat>().enabled = false;
@@ -50,6 +65,8 @@ public class PlayerHealth : MonoBehaviour
             StartCoroutine(DelayedDeathFlag());
 
             SetLayerRecursively(gameObject, "Feet");
+            Debug.Log("Lanjut");
+            GameManager.Instance.GameOver();
         }
     }
 
