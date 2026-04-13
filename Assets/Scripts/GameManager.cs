@@ -17,9 +17,11 @@ public class GameManager : MonoBehaviour
 
     public void RespawnPlayer()
     {
-        Time.timeScale = 1f;
-        PersistentRoot.instance.ResetAll();
-        SceneManager.LoadScene("0_PrologScene");
+        Time.timeScale = 1f;    
+        string currentLevel = SceneManager.GetActiveScene().name;
+        // Panggil SceneTransitionManager untuk reload level
+        SceneTransitionManager.LoadScene(currentLevel, "Start"); 
+        Debug.Log(currentLevel);
         Debug.Log("Respawn player");
     }
 }

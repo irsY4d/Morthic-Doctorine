@@ -1,6 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
 public class CameraManager : MonoBehaviour
 {

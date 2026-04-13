@@ -2,43 +2,45 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PersistentRoot : MonoBehaviour
-{
-    public static PersistentRoot instance;
+{    
+    // public static PersistentRoot instance;
 
-    void Awake()
-    {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
+    // void Awake()
+    // {
+    //     if (instance == null)
+    //     {
+    //         instance = this;
+    //         DontDestroyOnLoad(gameObject);
+    //     }
+    //     else
+    //     {
+    //         Destroy(gameObject);
+    //         return; 
+    //     }
+        
+    //     SceneManager.sceneLoaded += OnSceneLoaded;
+    // }
 
-        instance = this;
-        DontDestroyOnLoad(gameObject);
+    // void OnDestroy()
+    // {
+    //     SceneManager.sceneLoaded -= OnSceneLoaded;
+    // }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
+    // void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // {
+    //     int index = scene.buildIndex;
 
-    void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+    //     // Scene 0 dan Scene >= 4 → hancurkan
+    //     if (index < 1 || index > 3)
+    //     {
+    //         Destroy(gameObject);
+    //         instance = null;
+    //     }
+    // }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        int index = scene.buildIndex;
-
-        // Scene 0 dan Scene >= 4 → hancurkan
-        if (index < 1 || index > 3)
-        {
-            Destroy(gameObject);
-            instance = null;
-        }
-    }
-
-    public void ResetAll()
-    {
-        Destroy(gameObject);
-        instance = null;
-    }
+    // public void ResetAll()
+    // {
+    //     Destroy(gameObject);
+    //     instance = null;
+    // }
 }
