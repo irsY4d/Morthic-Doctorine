@@ -26,7 +26,7 @@ public class RevenantAttack : MonoBehaviour
     private bool isAttacking = false;
     private bool hasHitPlayer = false;
     private bool chase = false;
-    
+
 
     void Start()
     {
@@ -82,14 +82,15 @@ public class RevenantAttack : MonoBehaviour
 
         if (distance > attackRange)
         {
-            Vector2 target = new Vector2(player.position.x, transform.position.y);
-            transform.position = Vector2.MoveTowards(transform.position, target, enemyController.EnemySpeed * Time.deltaTime);
+            float dir = Mathf.Sign(player.position.x - transform.position.x);
+
+            rb.linearVelocity = new Vector2(dir * enemyController.EnemySpeed, rb.linearVelocity.y);
+
             animator.SetBool("isWalking", true);
-            Flip(target.x);
+            Flip(player.position.x);
         }
         else
         {
-            // Dalam jarak attack
             rb.linearVelocity = Vector2.zero;
             animator.SetBool("isWalking", false);
 
@@ -104,23 +105,26 @@ public class RevenantAttack : MonoBehaviour
 
     void ReturnToStart()
     {
-        Vector2 target = new Vector2(startPosition.position.x, transform.position.y);
-        transform.position = Vector2.MoveTowards(transform.position, target, enemyController.EnemySpeed * Time.deltaTime);
-        Flip(target.x);
-        if (Vector2.Distance(transform.position, target) < 0.05f)
+        float distance = Mathf.Abs(startPosition.position.x - transform.position.x);
+
+        if (distance > 0.05f)
         {
-            animator.SetBool("isWalking", false);
+            float dir = Mathf.Sign(startPosition.position.x - transform.position.x);
+
+            rb.linearVelocity = new Vector2(dir * enemyController.EnemySpeed, rb.linearVelocity.y);
+
+            animator.SetBool("isWalking", true);
+            Flip(startPosition.position.x);
         }
         else
         {
-            animator.SetBool("isWalking", true);
+            rb.linearVelocity = Vector2.zero;
+            animator.SetBool("isWalking", false);
         }
     }
 
     private void Flip(float targetX)
     {
-        if (player == null) return;
-
         if (targetX > transform.position.x)
             transform.rotation = Quaternion.Euler(0, 180, 0);
         else

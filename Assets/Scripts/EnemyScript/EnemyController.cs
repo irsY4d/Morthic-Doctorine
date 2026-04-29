@@ -22,6 +22,9 @@ public class EnemyController : MonoBehaviour
     private bool isChasing = false;
     private float currentHealth;
 
+    [Header("Combat")]
+    [SerializeField] float hitRecoveryDuration = 0.4f;
+
     public bool IsDead => isDead;
     public bool IsChasing => isChasing;
     public bool HasSuperArmor => data.isBoss;
@@ -66,11 +69,12 @@ public class EnemyController : MonoBehaviour
             Vector3 offset = new Vector3(0.2f, 0.1f, 0f); // tweak sesuai kebutuhan
             GlobalEffect.Instance.SpawnBloodEffect(transform.position + offset);
             GlobalEffect.Instance.PlayHitSFX();
-
+            StartCoroutine(ResetHit());
         }
         else
         {
             StartCoroutine(FlashRed());
+            StartCoroutine(ResetHit());
         }
 
         if (currentHealth <= 0)
@@ -90,6 +94,12 @@ public class EnemyController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             sr.color = Color.white;
         }
+    }
+
+    IEnumerator ResetHit()
+    {
+        yield return new WaitForSeconds(hitRecoveryDuration);
+        isHit = false;
     }
 
     public void DestroySelf()
@@ -170,6 +180,8 @@ public class EnemyController : MonoBehaviour
     public void ResumePatrol()
     {
         isChasing = false;
+        rb.linearVelocity = Vector2.zero;
+        animator.SetBool("isWalking", false);
         Flip(movingRight);
         //Debug.Log("Continue Patroling");
     }
