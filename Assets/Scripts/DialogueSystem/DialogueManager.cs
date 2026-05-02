@@ -32,7 +32,7 @@ public class DialogueManager : MonoBehaviour
     }
     void Start()
     {
-        playerInteraction = FindFirstObjectByType<PlayerInteraction>();
+        playerInteraction = FindAnyObjectByType<PlayerInteraction>();
     }
 
     public void StartDialogue(DialogueData data, NPC npc)

@@ -13,6 +13,7 @@ public class NecromancerAttack : MonoBehaviour
     [SerializeField] EnemyController enemyController;
     [SerializeField] float chaseSpeed = 2f;
 
+
     [SerializeField] Animator animator;
     [SerializeField] AudioClip fireballSFX;
 

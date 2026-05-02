@@ -9,7 +9,19 @@ public static class SceneTransitionManager
     {
         LastEntryID = entryID;
         SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.LoadScene(sceneName);
+
+        // Unload semua scene selain Persistent
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.name != "C_PersistentScene")
+            {
+                SceneManager.UnloadSceneAsync(scene);   
+            }
+        }
+
+        // Load scene baru secara additive
+        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -17,12 +29,12 @@ public static class SceneTransitionManager
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {
-            Debug.LogWarning("Player not found in scene! (is it persistent?)");
+            Debug.LogWarning("Player not found in Persistent scene!");
             SceneManager.sceneLoaded -= OnSceneLoaded;
             return;
         }
 
-        var spawnPoints = Object.FindObjectsByType<PlayerSpawnPoint>(FindObjectsSortMode.None);
+        var spawnPoints = Object.FindObjectsByType<PlayerSpawnPoint>(FindObjectsInactive.Exclude);
         foreach (var sp in spawnPoints)
         {
             if (sp.entryID == LastEntryID)
@@ -32,7 +44,6 @@ public static class SceneTransitionManager
             }
         }
 
-        // Lepas listener agar tidak dobel di scene berikutnya
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

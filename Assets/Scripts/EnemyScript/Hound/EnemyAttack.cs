@@ -53,6 +53,9 @@ public class EnemyAttack : MonoBehaviour
         }
         else
         {
+            rb.linearVelocity = Vector2.zero;
+            animator.SetBool("isWalking", false);
+            attackTimer = 0f;
             enemyController.ResumePatrol(); // ⬅️ Kembali patrol kalau player kabur
         }
     }
