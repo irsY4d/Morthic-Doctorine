@@ -129,11 +129,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2344032417243716045, guid: 4e12e5fc9b6375a4ea971843fbe40890, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 91.2
+      value: 109.74
       objectReference: {fileID: 0}
     - target: {fileID: 2344032417243716045, guid: 4e12e5fc9b6375a4ea971843fbe40890, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.9
+      value: -1.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612198461946608471, guid: 4e12e5fc9b6375a4ea971843fbe40890, type: 3}
+      propertyPath: quests.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6768235393118217181, guid: 4e12e5fc9b6375a4ea971843fbe40890, type: 3}
       propertyPath: m_Name

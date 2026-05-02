@@ -31,12 +31,12 @@ public class PlayerInputController : MonoBehaviour
 
     void Awake()
     {
-        var playerMap = inputActions.FindActionMap("Player");
-        move = playerMap.FindAction("Move");
-        jump = playerMap.FindAction("Jump");
-        attack = playerMap.FindAction("Attack");
-        spell = playerMap.FindAction("Spell");
-        interaction = playerMap.FindAction("Interact");
+        var playerMap = inputActions.FindActionMap("Player", true);
+        move = playerMap.FindAction("Move", true);
+        jump = playerMap.FindAction("Jump", true);
+        attack = playerMap.FindAction("Attack", true);
+        spell = playerMap.FindAction("Spell", true);
+        interaction = playerMap.FindAction("Interact", true);
 
         move.performed += ctx => Movement = ctx.ReadValue<Vector2>();
         move.canceled += ctx => Movement = Vector2.zero;

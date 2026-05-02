@@ -53,6 +53,9 @@ TagManager:
   - name: Ground
     uniqueID: 1695110455
     locked: 0
+  - name: ' Puzzle / Button'
+    uniqueID: 332513209
+    locked: 0
   - name: NPC
     uniqueID: 1767535317
     locked: 0
@@ -70,3 +73,4 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  m_MigratedRenderPipelines: []
