@@ -10,6 +10,7 @@ public class EscMenuButton : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject pauseMenuUI;
 
+    //Input Actions UI
     private InputAction pauseAction;
     private bool isPaused;
 

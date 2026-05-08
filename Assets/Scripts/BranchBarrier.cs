@@ -2,11 +2,20 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 
+/// <summary>
+/// BranchBarrier mengatur objective membereskan musuh target untuk membuka path.
+/// Script ini memonitor musuh, update UI progress, dan mendaftarkan quest di GameManager.
+/// </summary>
 public class BranchBarrier : MonoBehaviour
 {
     [Header("Enemy Settings")]
     [Tooltip("Tarik semua musuh yang harus mati ke sini")]
     [SerializeField] private List<EnemyController> enemiesToWatch;
+
+    [Header("Quest Settings")]
+    [Tooltip("Gunakan unique quest ID agar GameManager dapat membedakan quest berbeda.")]
+    [SerializeField] private string questId = "branch_barrier_quest";
+    [SerializeField] private string questTitle = "Eliminate the Branch Barrier Foes";
 
     [Header("UI Quest")]
     [SerializeField] private TextMeshProUGUI progressText;
@@ -17,7 +26,7 @@ public class BranchBarrier : MonoBehaviour
 
     void Start()
     {
-        // Hitung total musuh yang didaftarkan di awal
+        // Hitung total musuh yang didaftarkan di awal.
         totalEnemy = enemiesToWatch.Count;
         
         if (totalEnemy == 0)
@@ -34,34 +43,52 @@ public class BranchBarrier : MonoBehaviour
         {
             Debug.LogWarning("Progress text UI belum di-assign di BranchBarrier.");
         }
+
+        // Daftarkan quest ke GameManager agar quest dapat dipantau secara global.
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterQuest(questId, questTitle, totalEnemy);
+        }
     }
 
     void Update()
     {
         if (isOpened || enemiesToWatch.Count == 0) return;
 
-        // Cek list musuh dari belakang (agar aman saat menghapus list)
+        bool progressChanged = false;
+
+        // Cek list musuh dari belakang agar aman saat menghapus elemen.
         for (int i = enemiesToWatch.Count - 1; i >= 0; i--)
         {
-            // Jika musuh sudah mati (isDead dari script EnemyController)
             if (enemiesToWatch[i] == null || enemiesToWatch[i].IsDead)
             {
                 deadEnemyCount++;
-                enemiesToWatch.RemoveAt(i); // Hapus dari pantauan agar tidak dihitung lagi
+                enemiesToWatch.RemoveAt(i); // Hapus dari pantauan agar tidak dihitung lagi.
+                progressChanged = true;
                 Debug.Log($"Enemy mati! Progress: {deadEnemyCount}/{totalEnemy}");
             }
         }
 
+        if (progressChanged && GameManager.Instance != null)
+        {
+            GameManager.Instance.SetQuestProgress(questId, deadEnemyCount);
+        }
+
         UpdateProgressText();
 
-        // Cek apakah semua target sudah mati
         if (deadEnemyCount >= totalEnemy && totalEnemy > 0)
         {
             OpenPath();
-            progressText.gameObject.SetActive(false);
+            if (progressText != null)
+            {
+                progressText.gameObject.SetActive(false);
+            }
         }
     }
 
+    /// <summary>
+    /// Mengupdate teks progress UI.
+    /// </summary>
     private void UpdateProgressText()
     {
         if (progressText == null) return;
@@ -69,12 +96,20 @@ public class BranchBarrier : MonoBehaviour
         progressText.text = $"Eliminate Foes : {deadEnemyCount}/{totalEnemy}";
     }
 
+    /// <summary>
+    /// Membuka path dan menyelesaikan quest ketika semua musuh target telah mati.
+    /// </summary>
     private void OpenPath()
     {
         isOpened = true;
         Debug.Log("Semua musuh target mati. Branch hancur!");
-        
-        // Kamu bisa tambah efek hancur/animasi di sini
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.CompleteQuest(questId);
+        }
+
+        // Tambahkan efek visual/animasi di sini jika ingin.
         Destroy(gameObject);
     }
 }
