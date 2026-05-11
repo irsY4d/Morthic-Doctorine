@@ -38,6 +38,7 @@ public class PlayerCombat : MonoBehaviour
     private int atkcomboStage = 0;
     private int atkjumpcomboStage = 0;
 
+
     void Start()
     {
         if (playerHealth == null)
@@ -55,6 +56,7 @@ public class PlayerCombat : MonoBehaviour
         {
             rb = GetComponent<Rigidbody2D>();
         }
+        
     }
 
     void Update()
@@ -197,6 +199,16 @@ public class PlayerCombat : MonoBehaviour
                 Debug.Log($"Hit enemy {enemy.EnemyName} with {activeAttack.attackName} → {activeAttack.damageAmount} dmg");
             }
         }
+    }
+
+    public void ResetCombatStatus()
+    {
+        hasHitEnemy = false;
+        atkcomboStage = 0;
+        atkjumpcomboStage = 0;
+        comboTimer = 0;
+        DisableHitbox(); // Pastikan hitbox mati
+        Debug.Log("Combat Status Reset for Retry.");
     }
 
 

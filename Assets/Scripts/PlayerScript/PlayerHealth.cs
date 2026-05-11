@@ -109,4 +109,32 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(0.2f); // kasih waktu animator masuk ke GotHit
         animationController.SetDeath(true);
     }
+
+    public void ResetHealth()
+    {
+        StopAllCoroutines();
+
+        HealthPoint = maxHealthPoint;
+        UpdateHealthUI();
+
+        animationController.SetDeath(false);
+
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            // Paksa Animator pindah ke State yang berisi Blend Tree tersebut
+            anim.Play("Movement", 0, 0f);
+
+        }
+
+        GetComponent<PlayerMovement>().enabled = true;
+        GetComponent<PlayerCombat>().enabled = true;
+        SetLayerRecursively(gameObject, "Player");
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+    }
 }

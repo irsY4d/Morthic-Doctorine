@@ -3,9 +3,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections.Generic;
 
-/// <summary>
 /// Simple data container for one quest's state.
-/// </summary>
 [Serializable]
 public class QuestData
 {
@@ -21,24 +19,18 @@ public class QuestData
 
 public class GameManager : MonoBehaviour
 {
-    /// <summary>
     /// Static reference agar script lain mudah mengakses GameManager.
-    /// </summary>
     public static GameManager Instance { get; private set; }
 
     [Header("Quest System")]
     [Tooltip("Daftar quest aktif yang dapat di-update oleh object lain.")]
     [SerializeField] private List<QuestData> quests = new List<QuestData>();
 
-    /// <summary>
-    /// Dipanggil setiap kali progress quest berubah.
-    /// </summary>
-    public event Action<QuestData> OnQuestUpdated;
+    public event Action<QuestData> OnQuestUpdated; // Dipanggil setiap kali progress quest berubah.
+    public event Action<QuestData> OnQuestCompleted; // Dipanggil saat quest selesai.
 
-    /// <summary>
-    /// Dipanggil saat quest selesai.
-    /// </summary>
-    public event Action<QuestData> OnQuestCompleted;
+    [Header("Cutscene Tracker")]
+    public List<string> completedCutscenes = new List<string>();
 
     void Awake()
     {
@@ -52,9 +44,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
+    #region Quest System
     /// Cari quest berdasarkan questId.
-    /// </summary>
     public QuestData GetQuest(string questId)
     {
         return quests.Find(q => q.questId == questId);
@@ -155,25 +146,100 @@ public class GameManager : MonoBehaviour
         OnQuestCompleted?.Invoke(quest);
         Debug.Log($"Quest selesai: {quest.title} ({quest.questId})");
     }
+    #endregion
 
-    /// <summary>
+    #region Cutscene List
+    public bool IsCutsceneDone(string id)
+    {
+        return completedCutscenes.Contains(id);
+    }
+
+    public void MarkCutsceneAsDone(string id)
+    {
+        if (!completedCutscenes.Contains(id))
+        {
+            completedCutscenes.Add(id);
+            Debug.Log("Cutscene disimpan ke memori: " + id);
+        }
+    }
+    #endregion 
+
+    #region Game Over System
     /// Menampilkan UI Game Over.
-    /// </summary>
     public void GameOver()
     {
         GameOverUI.Instance.Show();
     }
+    #endregion
 
-    /// <summary>
+    #region Respawn System
     /// Reload level yang sedang aktif saat player respawn.
-    /// </summary>
+    public string lastCheckpointID; // Simpan ID checkpoint terakhir yang diinjak player
+    public string lastCheckpointScene;
     public void RespawnPlayer()
     {
+        //Pastikan waktu berjalan normal (jika sebelumnya game di-pause)
         Time.timeScale = 1f;
-        string currentLevel = SceneManager.GetActiveScene().name;
-        // Panggil SceneTransitionManager untuk reload level
-        SceneTransitionManager.LoadScene(currentLevel, "Start");
-        Debug.Log(currentLevel);
-        Debug.Log("Respawn player");
+
+        //Reset health player sebelum respawn agar tidak mati lagi saat muncul
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            PlayerHealth health = player.GetComponent<PlayerHealth>();
+            if (health != null)
+            {
+                health.ResetHealth();
+            }
+            PlayerCombat combat = player.GetComponent<PlayerCombat>();
+            if (combat != null)
+            {
+                // Kita akan buat fungsi ini di PlayerCombat
+                combat.ResetCombatStatus();
+            }
+        }
+
+        // Tentukan scene tujuan respawn
+        string targetScene = lastCheckpointScene;
+
+        if (string.IsNullOrEmpty(targetScene))
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene s = SceneManager.GetSceneAt(i);
+                if (s.name != "C_PersistentScene")
+                {
+                    targetScene = s.name;
+                    break;
+                }
+            }
+        }
+
+        // Muat ulang scene menggunakan TransitionManager agar persistent tetap aman
+        // Kita kirim flag isRespawn = true agar sistem mencari 'RespawnChekpoint' bukan 'PlayerSpawnPoint'
+        if (!string.IsNullOrEmpty(targetScene))
+        {
+            Debug.Log("Respawning Player ke Scene: " + targetScene + " ID: " + lastCheckpointID);
+            SceneTransitionManager.LoadScene(targetScene, lastCheckpointID, true);
+        }
+
+        ResetAllLayers(player);
     }
+
+    void ResetAllLayers(GameObject obj)
+    {
+        // Cek apakah ini objek hitbox pedang (bisa dicek lewat nama atau komponen)
+        if (obj.name.Contains("Sword"))
+            obj.layer = LayerMask.NameToLayer("PlayerAttack");
+        else if (obj.name.Contains("Feet"))
+            obj.layer = LayerMask.NameToLayer("Feet");
+        else
+            obj.layer = LayerMask.NameToLayer("Player");
+
+        // Ulangi untuk semua anak-anaknya secara otomatis
+        foreach (Transform child in obj.transform)
+        {
+            ResetAllLayers(child.gameObject);
+        }
+    }
+    #endregion
 }

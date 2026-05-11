@@ -26,9 +26,26 @@ public class BranchBarrier : MonoBehaviour
 
     void Start()
     {
+        if (GameManager.Instance != null)
+        {
+            QuestData existingQuest = GameManager.Instance.GetQuest(questId);
+
+            if (existingQuest != null && existingQuest.IsCompleted)
+            {
+                // Hancurkan semua musuh yang ada di list pemantauan
+                foreach (var enemy in enemiesToWatch)
+                {
+                    if (enemy != null) Destroy(enemy.gameObject);
+                }
+
+                // Lalu hancurkan diri sendiri (Barrier)
+                Destroy(gameObject);
+                return;
+            }
+        }
         // Hitung total musuh yang didaftarkan di awal.
         totalEnemy = enemiesToWatch.Count;
-        
+
         if (totalEnemy == 0)
         {
             Debug.LogWarning("Opps! Kamu belum memasukkan enemy ke list di BranchBarrier.");

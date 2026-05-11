@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class NPC : MonoBehaviour
@@ -19,6 +20,11 @@ public class NPC : MonoBehaviour
     }
 
     void Update()
+    {
+        DialogueInteraction();
+    }
+
+    public void DialogueInteraction()
     {
         if (playerIsClose && playerInteraction != null)
         {

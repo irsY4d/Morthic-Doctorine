@@ -146,7 +146,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.32576466, y: -0.05815375}
+  m_Offset: {x: -0.3228314, y: -0.09335315}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -156,7 +156,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.3484707, y: 0.8885}
+  m_Size: {x: 0.6007333, y: 1.017564}
   m_EdgeRadius: 0
 --- !u!1 &3308282726429504221
 GameObject:
@@ -299,6 +299,7 @@ GameObject:
   - component: {fileID: 1125079740675007647}
   - component: {fileID: 4409509917305021055}
   - component: {fileID: 4432804180911092114}
+  - component: {fileID: 6523058713860925324}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -325,6 +326,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4599644606255009316
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -343,6 +345,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -364,9 +368,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 954695273
-  m_SortingLayer: 4
+  m_SortingLayer: 6
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -8926819978359826057, guid: 4ec50b9dca770ec4dad00d489a11d2e1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -376,7 +382,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &4469337551116557506
 Rigidbody2D:
@@ -481,7 +486,7 @@ MonoBehaviour:
   feetCollider: {fileID: 4108622095432421352}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 2112
   groundCheckPoint: {fileID: 4028630745372136251}
   groundCheckDistance: 0.2
   maxGroundAngle: 15
@@ -659,10 +664,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb421247385b6c45bd33c6ca5c0cd96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 4
+  HealthPoint: 10
   maxHealthPoint: 10
   animationController: {fileID: 7213600140932743611}
   damageVoice: {fileID: 8300000, guid: 815727a51672b4d45b15c8d108139ecf, type: 3}
+  healthBarFill: {fileID: 0}
   knockbackForce: {x: 2, y: 1}
 --- !u!82 &4432804180911092114
 AudioSource:
@@ -761,3 +767,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6523058713860925324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5416198890855769340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa3dc5fa56ce1b2418cfde5611846fe9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

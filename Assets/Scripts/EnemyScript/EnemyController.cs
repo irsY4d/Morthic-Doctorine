@@ -6,15 +6,16 @@ public class EnemyController : MonoBehaviour
 {
     [Header("Basic Data")]
     [SerializeField] EnemyData data;
-    [SerializeField] Transform leftPoint;
-    [SerializeField] Transform rightPoint;
+    [SerializeField] protected Transform leftPoint;
+    [SerializeField] protected Transform rightPoint;
     [SerializeField] Animator animator;
     [SerializeField] float idleDuration = 2f;
 
-    private Rigidbody2D rb;
-    private Vector2 startPos;
+    protected Rigidbody2D rb;
+    protected Vector2 startPos;
+    protected bool movingRight = true;
+
     private EnemyData runtimeData;
-    private bool movingRight = true;
     private bool isIdle = false;
     private float idleTimer = 0f;
     private bool isDead = false;
@@ -37,14 +38,14 @@ public class EnemyController : MonoBehaviour
         currentHealth = runtimeData.maxHealth;
     }
 
-    void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
         movingRight = transform.localScale.x < 0;
     }
 
-    void Update()
+    protected virtual void Update()
     {
         //Debug.Log($"Enemy {EnemyName} → isDead: {isDead}, isHit: {isHit}, isChasing: {isChasing}");
         if (isDead || isChasing) return;
@@ -54,7 +55,7 @@ public class EnemyController : MonoBehaviour
 
     }
 
-    public void TakeDamage(float dmg)
+    public virtual void TakeDamage(float dmg)
     {
         if (isDead) return;
 
@@ -111,7 +112,7 @@ public class EnemyController : MonoBehaviour
     // -------------------
     // 🔹 Fungsi Modular Flip
     // -------------------
-    public void Flip(bool faceRight)
+    public virtual void Flip(bool faceRight)
     {
         movingRight = faceRight;
         transform.localScale = new Vector3(
@@ -122,7 +123,7 @@ public class EnemyController : MonoBehaviour
     }
 
     // 🔹 Menghadap player (buat Necromancer / Ranged Enemy)
-    public void FacePlayer(Transform player)
+    public virtual void FacePlayer(Transform player)
     {
         if (player == null) return;
 
@@ -130,7 +131,7 @@ public class EnemyController : MonoBehaviour
         Flip(playerIsRight);
     }
 
-    void Patrol()
+    protected virtual void Patrol()
     {
         if (isHit || isDead) return;
 
